@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 import os
 
@@ -17,6 +17,10 @@ def send_photo(photo_url):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
     payload = {"chat_id": CHAT_ID, "photo": photo_url}
     requests.post(url, json=payload, timeout=5)
+
+@app.route("/")
+def form():
+    return render_template("form.html")
 
 @app.route("/complaint", methods=["POST"])
 def complaint():
