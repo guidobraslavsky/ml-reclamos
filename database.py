@@ -52,3 +52,38 @@ def guardar_reclamo(data):
     conn.close()
 
     return reclamo_id
+
+
+def obtener_reclamos():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT * FROM reclamos
+        ORDER BY fecha DESC
+    """
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows
+
+
+def marcar_resuelto(reclamo_id):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE reclamos
+        SET estado = 'resuelto'
+        WHERE id = ?
+    """,
+        (reclamo_id,),
+    )
+
+    conn.commit()
+    conn.close()
