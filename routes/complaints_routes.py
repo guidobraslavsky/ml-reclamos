@@ -15,10 +15,20 @@ def form():
 def complaint():
     data = request.json
 
+    print("=== NUEVO RECLAMO ===")
+    print("Data recibida:", data)
+    print("Secret recibido:", request.headers.get("X-Secret-Key"))
+
     if request.headers.get("X-Secret-Key") != Config.SECRET_KEY:
         return jsonify({"error": "Unauthorized"}), 403
 
-    reclamo_id = guardar_reclamo(data)
+    try:
+        reclamo_id = guardar_reclamo(data)
+    except Exception as e:
+        print("ERROR DB:", e)
+        reclamo_id = "N/A"
+
+    print("Enviando Telegram...")
 
     message = f"""
 🚨 NUEVO RECLAMO #{reclamo_id}
