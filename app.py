@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
 from flask import Flask
 from routes.complaints_routes import complaint_bp
 from routes.admin_routes import admin_bp
 from database import init_db
 import os
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
