@@ -9,22 +9,32 @@ def init_db():
 
     cursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS reclamos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            nombre TEXT,
-            pedido_ml TEXT,
-            contacto TEXT,
-            producto TEXT,
-            tipo TEXT,
-            descripcion TEXT,
-            estado TEXT DEFAULT 'pendiente'
-        )
-    """
+    CREATE TABLE IF NOT EXISTS reclamos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        nombre TEXT,
+        pedido_ml TEXT,
+        contacto TEXT,
+        producto TEXT,
+        tipo TEXT,
+        descripcion TEXT,
+        estado TEXT DEFAULT 'pendiente',
+        printed INTEGER DEFAULT 0
+    )
+"""
     )
 
     conn.commit()
     conn.close()
+
+
+def get_connection():
+
+    conn = sqlite3.connect(DB_NAME)
+
+    conn.row_factory = sqlite3.Row
+
+    return conn
 
 
 def guardar_reclamo(data):
@@ -102,3 +112,41 @@ def obtener_reclamo(reclamo_id):
     conn.close()
 
     return reclamo
+
+
+def get_orders_pending_print():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT pedido_ml as order_id
+        FROM reclamos
+        WHERE printed = 0
+    """
+    )
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [{"order_id": r["order_id"]} for r in rows]
+
+
+def mark_order_printed(order_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE reclamos
+        SET printed = 1
+        WHERE pedido_ml = ?
+    """,
+        (order_id,),
+    )
+
+    conn.commit()
+    conn.close()

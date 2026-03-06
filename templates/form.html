@@ -223,6 +223,14 @@
 
         })
 
+        const params = new URLSearchParams(window.location.search)
+        const order = params.get("order")
+
+        if (order) {
+            document.getElementById("pedido_ml").value = order
+            buscarPedido()
+        }
+
     </script>
 
 </body>
