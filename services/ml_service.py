@@ -2,8 +2,8 @@ import requests
 import os
 from services.ml_token_service import get_access_token
 from services.qr_service import generar_qr
-from services.print_service import imprimir_zpl
 from services.zpl_sticker_service import generar_sticker, combinar_etiqueta
+from services.print_agent import imprimir_zpl
 
 
 ML_TOKEN = os.environ.get("ML_ACCESS_TOKEN")
@@ -13,7 +13,6 @@ import requests
 
 from services.ml_token_service import get_access_token
 from services.zpl_sticker_service import generar_sticker
-from services.print_service import imprimir_zpl
 
 
 def get_order(order_id):
